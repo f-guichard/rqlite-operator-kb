@@ -1,0 +1,7 @@
+apiVersion: rqlite.rqlite.fnetworks.tf/v1
+kind: RqliteCluster
+metadata:
+  name: rqlitecluster-sample
+spec:
+  # Add fields here
+  foo: bar

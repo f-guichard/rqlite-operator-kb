@@ -1,0 +1,24 @@
+# permissions for end users to edit rqliteclusters.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rqlitecluster-editor-role
+rules:
+- apiGroups:
+  - rqlite.rqlite.fnetworks.tf
+  resources:
+  - rqliteclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rqlite.rqlite.fnetworks.tf
+  resources:
+  - rqliteclusters/status
+  verbs:
+  - get

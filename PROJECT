@@ -1,0 +1,7 @@
+domain: rqlite.fnetworks.tf
+repo: rqlite-kubebuilder
+resources:
+- group: rqlite
+  kind: RqliteCluster
+  version: v1
+version: "2"
