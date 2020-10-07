@@ -28,12 +28,12 @@ type RqliteClusterSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	Name           string `json:"name,omitempty"`
-	ClusterID      string `json:"clusterid,omitempty"`
-	ClusterSize    int8   `json:"clustersize,omitempty"`
-	InternalID     string 
-	CustomerInfos  map[string]string
-//	OthersInfos    []interface{}
+	Name          string `json:"name,omitempty"`
+	ClusterID     string `json:"clusterid,omitempty"`
+	ClusterSize   int8   `json:"clustersize,omitempty"`
+	InternalID    string
+	CustomerInfos map[string]string
+	//	OthersInfos    []interface{}
 }
 
 // RqliteClusterStatus defines the observed state of RqliteCluster
