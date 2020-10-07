@@ -20,9 +20,11 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
+	//	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	//	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	rqlitev1 "rqlite-kubebuilder/api/v1"
 )
@@ -36,10 +38,12 @@ type RqliteClusterReconciler struct {
 
 // +kubebuilder:rbac:groups=rqlite.rqlite.fnetworks.tf,resources=rqliteclusters,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=rqlite.rqlite.fnetworks.tf,resources=rqliteclusters/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get;update;patch
 
 func (r *RqliteClusterReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	log := r.Log.WithValues("Reconcile rqlitecluster", req.NamespacedName)
+	log := r.Log.WithValues("Reconcile RqliteCluster ", req.Name, " in namespace ", req.NamespacedName)
 
 	log.V(1).Info("Get Object Info")
 
