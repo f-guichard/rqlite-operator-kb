@@ -39,17 +39,17 @@ type RqliteClusterReconciler struct {
 
 func (r *RqliteClusterReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	log = r.Log.WithValues("Reconcile rqlitecluster", req.NamespacedName)
+	log := r.Log.WithValues("Reconcile rqlitecluster", req.NamespacedName)
 
-        log.V(1).Info("Get Object Info")
+	log.V(1).Info("Get Object Info")
 
-        log.V(1).Info("Get Object Status")
+	log.V(1).Info("Get Object Status")
 
 	//if status doesnt match
-        log.V(1).Info("Update Object Status")
+	log.V(1).Info("Update Object Status")
 
 	//if anything else happens
-        log.Error("unable to reconcile object")
+	//log.Error("unable to reconcile object")
 
 	return ctrl.Result{}, nil
 }
