@@ -28,14 +28,19 @@ type RqliteClusterSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of RqliteCluster. Edit RqliteCluster_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Name           string `json:"name,omitempty"`
+	ClusterID      string `json:"clusterid,omitempty"`
+	ClusterSize    int8   `json:"clustersize,omitempty"`
+	InternalID     string 
+	CustomerInfos  map[string]string
+//	OthersInfos    []interface{}
 }
 
 // RqliteClusterStatus defines the observed state of RqliteCluster
 type RqliteClusterStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
 }
 
 // +kubebuilder:object:root=true
