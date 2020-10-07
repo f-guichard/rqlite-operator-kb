@@ -44,6 +44,9 @@ type RqliteClusterStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:JSONPath=".spec.name", name=Name, type=string
+// +kubebuilder:printcolumn:JSONPath=".status.cs", name=CurrentStatus, type=string
 
 // RqliteCluster is the Schema for the rqliteclusters API
 type RqliteCluster struct {
