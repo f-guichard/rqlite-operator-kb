@@ -1,0 +1,8 @@
+apiVersion: rqlite.rqlite.fnetworks.tf/v1
+kind: RqliteCluster
+metadata:
+  name: test-rqlitecluster
+  namespace: rqlite-operator
+spec:
+  name: freewall-db
+  clustersize: 3
