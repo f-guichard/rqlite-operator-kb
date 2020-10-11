@@ -18,13 +18,20 @@ package controllers
 
 import (
 	"context"
+	"fmt"
+	"strings"
+	"time"
 
 	"github.com/go-logr/logr"
-	//	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	//	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pks/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	rqlitev1 "rqlite-kubebuilder/api/v1"
 )
@@ -46,15 +53,35 @@ func (r *RqliteClusterReconciler) Reconcile(req ctrl.Request) (ctrl.Result, erro
 	log := r.Log.WithValues("Reconcile RqliteCluster ", req.Name, " in namespace ", req.NamespacedName)
 
 	log.V(1).Info("Get Object Info")
+	//objectInfo := new(rqlitev1.RqliteCluster{})
+	objectInfo := &rqlitev1.RqliteCluster{}
+	err := r.Get(context.TODO(), req.NamespacedName, objectInfo)
 
-	log.V(1).Info("Get Object Status")
+	if err != nil {
+		log.Error(err, "Error during r.Get")
+		if errors.IsNotFound(err) {
+			return reconcile.Result{}, nil
+		}
+		return reconcile.Result{}, err
+	}
+	log.Info("Dump Object Info", "ClusterName", objectInfo.Spec.Name, "ClusterSize", objectInfo.Spec.ClusterSize)
 
-	//if status doesnt match
 	log.V(1).Info("Update Object Status")
+	log.V(1).Info("Get Object Current Status", "NAme", objectInfo.Spec.Name, "Status", objectInfo.Status.CurrentStatus)
+	if objectInfo.Status.CurrentStatus == "" {
+		log.V(1).Info("Creating new RqliteCluster)
+		pod := newRqliteCluster(objectInfo)
+		objectInfo.Status.CurrentStatus = "OK"
+	}
 
+	log.V(1).Info("Set Object Target Status : ", "Name", objectInfo.Spec.Name, "Status ", objectInfo.Status.CurrentStatus)
+
+	err = r.Status().Update(context.TODO(), objectInfo)
+	if err != nil {
+		log.Error(err, "Error during r.Status")
+		return reconcile.Result{}, err
+	}
 	//if anything else happens
-	//log.Error("unable to reconcile object")
-
 	return ctrl.Result{}, nil
 }
 
@@ -62,4 +89,25 @@ func (r *RqliteClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&rqlitev1.RqliteCluster{}).
 		Complete(r)
+}
+
+func newRqliteCluster(rqliteCR *rqlitev1.RqliteCluster) $corev1.Pod {
+	labels := map[string]string {
+		"app": rqliteCR.Name,
+	}
+	return &corev1.Pod {
+		ObjectMeta: metav1.ObjectMeta {
+			Name: rqliteCR.Name+"-newpod",
+			Namespace: rqliteCR.Namespace,
+			Labels: labels,
+		},
+		Spec: corev1.PodSpec {
+			Containers: []corev1.Container {{
+				Name: "busybox",
+				Image: "busybox",
+				Command: strings.Split(rqliteCR.Spec.Command, ""),
+			}},
+			RestartPolicy: corev1.RestartPolicyOnFailure,
+		},
+	}
 }
